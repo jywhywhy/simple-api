@@ -16,6 +16,7 @@ public class MemoryMemberRepository implements MemberRepository {
 
     @Override
     public void save(MemberDTO memberDTO) {
+        memberDTO.setId(id);
         store.put(id++, memberDTO);
     }
 
@@ -34,9 +35,9 @@ public class MemoryMemberRepository implements MemberRepository {
 
     @Override
     public MemberDTO findByEmailAndPassword(MemberDTO memberDTO) {
-        MemberDTO tmp = findByEmail(memberDTO.getEmail());
-        if (tmp != null && tmp.getPassword().equals(memberDTO.getPassword())) {
-            return memberDTO;
+        MemberDTO result = findByEmail(memberDTO.getEmail());
+        if (result != null && result.getPassword().equals(memberDTO.getPassword())) {
+            return result;
         }
 
         return null;
