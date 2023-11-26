@@ -1,9 +1,10 @@
 package simple.api.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
 import org.springframework.stereotype.Service;
 import simple.api.dto.MemberDTO;
+import simple.api.exception.CustomErrorCode;
+import simple.api.exception.CustomException;
 import simple.api.repository.MemberRepository;
 import simple.api.service.MemberService;
 
@@ -14,8 +15,13 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
-    public MemberDTO emailCheck(MemberDTO memberDTO) {
-        return memberRepository.findByEmail(memberDTO.getEmail());
+    public void emailCheck(MemberDTO memberDTO) throws CustomException {
+        MemberDTO member = memberRepository.findByEmail(memberDTO.getEmail());
+
+        if (member != null) {
+            throw new CustomException(CustomErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
     }
 
     @Override
@@ -24,13 +30,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Long signIn(MemberDTO memberDTO) {
-        MemberDTO result = memberRepository.findByEmailAndPassword(memberDTO);
+    public Long signIn(MemberDTO memberDTO) throws CustomException {
+        MemberDTO member = memberRepository.findByEmailAndPassword(memberDTO);
 
-        if (result != null) {
-            return result.getId();
+        if (member == null) {
+            throw new CustomException(CustomErrorCode.LOGIN_FAILED);
         }
 
-        return null;
+        return member.getId();
+
     }
 }

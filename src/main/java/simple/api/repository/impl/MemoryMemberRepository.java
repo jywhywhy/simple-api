@@ -12,7 +12,7 @@ public class MemoryMemberRepository implements MemberRepository {
 
     private final Map<Long, MemberDTO> store = new HashMap<>();
 
-    private Long id = 0L;
+    private Long id = 1L;
 
     @Override
     public void save(MemberDTO memberDTO) {
